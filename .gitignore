@@ -1,0 +1,7 @@
+.DS_Store
+.omx/
+upstream-sparkle/
+node_modules/
+dist/
+extension.zip
+
