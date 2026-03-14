@@ -1,62 +1,77 @@
 # Sparkle Proxy Status
 
-Chrome MV3 extension for Sparkle. It shows whether the current tab is proxied, which rule matched, and the proxy chain returned by Sparkle's local read-only Extension API.
+适配 Sparkle 的 Chrome MV3 扩展，用来查看当前页面是否走代理、命中了哪条规则、最终使用了哪条代理链路。
 
-## What It Does
+扩展通过 Sparkle 提供的本地只读 Extension API 查询连接状态，不改系统设置，不写代理配置，只做读取和展示。
 
-- Checks the current tab URL against Sparkle's local Extension API
-- Shows proxied/direct status in the popup
-- Displays matched rule, chain, and last update time
-- Supports background prefetch and badge status
-- Uses a local Bearer token for read-only authorization
+## 功能
 
-## Repository Layout
+- 查看当前标签页是否走代理
+- 显示命中的规则和代理链路
+- 支持选项页配置本地 API 地址和 Bearer Token
+- 支持后台预拉取和角标状态提示
+- 只访问本机 `127.0.0.1` 的 Sparkle API
 
-This repository is intentionally minimal:
+## 仓库结构
 
-- `extension/`: Chrome extension source
+这个仓库只保留发布 Chrome 扩展需要的内容：
 
-The following directories are local-only and are not meant to be published from this repository:
+- `extension/`：扩展源文件
+
+以下目录仅用于本地开发或上游代码同步，不会提交到这个发布仓库：
 
 - `docs/`
 - `scripts/`
 - `upstream-sparkle/`
 
-## Load the Extension Locally
+## 本地加载
 
-1. Open `chrome://extensions`
-2. Turn on `Developer mode`
-3. Click `Load unpacked`
-4. Select the `extension/` directory in this repository
+1. 打开 `chrome://extensions`
+2. 开启“开发者模式”
+3. 点击“加载已解压的扩展程序”
+4. 选择本仓库里的 `extension/` 目录
 
-## Configure Sparkle
+## Sparkle 侧配置
 
-In Sparkle:
+在 Sparkle 中打开：
 
-1. Open `设置 -> 更多设置 -> 浏览器扩展 API`
-2. Enable the Extension API
-3. Confirm the port, usually `14123`
-4. Copy the token
-5. Set allowed origin to `chrome-extension://<your-extension-id>` if you want origin allowlisting
+`设置 -> 更多设置 -> 浏览器扩展 API`
 
-## Configure the Extension
+然后完成下面几步：
 
-Open the extension options page and fill in:
+1. 开启浏览器扩展 API
+2. 确认端口，默认一般是 `14123`
+3. 复制 Token
+4. 建议把允许的 Origin 设置为 `chrome-extension://<你的扩展ID>`
 
-- `Extension API Base URL`: `http://127.0.0.1:14123`
-- `Bearer Token`: paste the token from Sparkle without adding `Bearer `
+## 扩展侧配置
 
-Then click `测试连接`.
+打开扩展的 Options 页面，填写：
 
-## Package for Chrome Web Store
+- `Extension API Base URL`：`http://127.0.0.1:14123`
+- `Bearer Token`：直接粘贴 Sparkle 里的 token，不要自己再加 `Bearer `
 
-Chrome Web Store expects the zip root to contain `manifest.json` directly. Do not zip the whole repository root.
+填完后点击“测试连接”。
 
-### Option 1: Finder / Explorer
+## 如何打包
 
-Zip the contents inside `extension/`, not the `extension/` folder itself.
+Chrome Web Store 要求 zip 包根目录直接包含 `manifest.json`。  
+所以不要把整个仓库打包，也不要把 `extension/` 文件夹本身包成一层壳。
 
-The final zip should contain files like:
+正确做法是把 `extension/` 目录里面的文件打进 zip。
+
+### 命令行
+
+在仓库根目录执行：
+
+```bash
+cd extension
+zip -r ../extension.zip .
+```
+
+生成的 `extension.zip` 就可以直接上传。
+
+### 你应该看到的 zip 根目录
 
 - `manifest.json`
 - `popup.html`
@@ -65,37 +80,24 @@ The final zip should contain files like:
 - `options.js`
 - `service_worker.js`
 
-### Option 2: Command Line
+## 提交到 Chrome Web Store
 
-From the repository root:
+1. 打开 Chrome Web Store Developer Dashboard
+2. 新建扩展项目，或者打开已有项目
+3. 上传 `extension.zip`
+4. 填写商店描述、截图、图标、分类和隐私信息
+5. 提交审核
 
-```bash
-cd extension
-zip -r ../extension.zip .
-```
+## 每次发布前检查
 
-Then upload `extension.zip` to Chrome Web Store.
+1. 确认 Sparkle 的浏览器扩展 API 已开启
+2. 确认 token 可用
+3. 确认弹窗能正确显示代理状态
+4. 确认设置页“测试连接”通过
+5. 发布前更新 `extension/manifest.json` 里的版本号
 
-## Submit to Chrome Web Store
+## 说明
 
-1. Go to the Chrome Web Store Developer Dashboard
-2. Create a new item or open the existing item
-3. Upload the packaged zip
-4. Fill in the store listing, screenshots, description, and privacy information
-5. Submit for review
-
-## Release Checklist
-
-Before uploading:
-
-1. Confirm Sparkle's Extension API is enabled
-2. Confirm the token works
-3. Confirm popup and options page both load correctly
-4. Confirm the current tab can show proxied/direct status
-5. Bump `extension/manifest.json` version before each store upload
-
-## Development Notes
-
-- Host permission is limited to `http://127.0.0.1/*`
-- The extension only reads local Sparkle state
-- Authorization is sent as `Authorization: Bearer <token>`
+- 扩展权限只访问 `http://127.0.0.1/*`
+- 鉴权头格式是 `Authorization: Bearer <token>`
+- 这是只读状态查询，不负责改代理规则
