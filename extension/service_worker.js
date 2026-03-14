@@ -17,6 +17,10 @@ function sanitizeToken(s) {
   return t.replace(/^Bearer\\s+/i, '').trim()
 }
 
+function getExtensionOrigin() {
+  return `chrome-extension://${chrome.runtime.id}`
+}
+
 function normalizeBaseUrl(baseUrl) {
   const s = String(baseUrl || '').trim()
   if (!s) return SYNC_DEFAULTS.baseUrl
@@ -112,7 +116,10 @@ async function fetchConnectionForTab(tabId, tabUrl, reason = 'unknown') {
   try {
     res = await fetch(endpoint, {
       method: 'GET',
-      headers: { Authorization: `Bearer ${token}` }
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'X-Sparkle-Extension-Origin': getExtensionOrigin()
+      }
     })
   } catch {
     const cache = { tabId, url, reason, state: 'offline', updatedAt: Date.now() }

@@ -25,6 +25,10 @@ function sanitizeToken(s) {
   return t.replace(/^Bearer\s+/i, '').trim()
 }
 
+function getExtensionOrigin() {
+  return `chrome-extension://${chrome.runtime.id}`
+}
+
 function renderToggle(el, on) {
   el.classList.toggle('on', !!on)
 }
@@ -34,7 +38,7 @@ function getToggleValue(el) {
 }
 
 function setOriginText() {
-  const origin = `chrome-extension://${chrome.runtime.id}`
+  const origin = getExtensionOrigin()
   $('extId').textContent = chrome.runtime.id
   $('originText').textContent = origin
 }
@@ -95,7 +99,12 @@ async function testConnection() {
 
   let res
   try {
-    res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+    res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'X-Sparkle-Extension-Origin': getExtensionOrigin()
+      }
+    })
   } catch {
     setStatus('无法连接 Sparkle（离线）。')
     return
