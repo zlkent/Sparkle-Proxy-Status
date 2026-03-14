@@ -37,6 +37,12 @@
 
 `设置 -> 更多设置 -> 浏览器扩展 API`
 
+注意：这里必须使用适配过的 Sparkle，不能使用官方版本。
+
+适配版下载与源码：
+
+`https://github.com/zlkent/sparkle`
+
 然后完成下面几步：
 
 1. 开启浏览器扩展 API
@@ -79,14 +85,6 @@ zip -r ../extension.zip .
 - `options.html`
 - `options.js`
 - `service_worker.js`
-
-## 提交到 Chrome Web Store
-
-1. 打开 Chrome Web Store Developer Dashboard
-2. 新建扩展项目，或者打开已有项目
-3. 上传 `extension.zip`
-4. 填写商店描述、截图、图标、分类和隐私信息
-5. 提交审核
 
 ## 每次发布前检查
 
