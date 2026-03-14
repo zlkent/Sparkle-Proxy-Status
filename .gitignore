@@ -1,7 +1,8 @@
 .DS_Store
 .omx/
+docs/
+scripts/
 upstream-sparkle/
 node_modules/
 dist/
 extension.zip
-
