@@ -4,6 +4,18 @@
 
 扩展通过 Sparkle 提供的本地只读 Extension API 查询连接状态，不改系统设置，不写代理配置，只做读取和展示。
 
+## 使用前说明
+
+这个扩展必须配合修改版的 Sparkle 客户端使用，不能使用官方版 Sparkle。
+
+修改版 Sparkle 下载与源码地址：
+
+`https://github.com/zlkent/sparkle`
+
+在 Sparkle 中开启功能的位置：
+
+`设置 -> 更多设置 -> 浏览器扩展 API`
+
 ## 功能
 
 - 查看当前标签页是否走代理
@@ -33,15 +45,15 @@
 
 ## Sparkle 侧配置
 
+这里必须使用修改版 Sparkle，不能使用官方版本。
+
+修改版下载与源码：
+
+`https://github.com/zlkent/sparkle`
+
 在 Sparkle 中打开：
 
 `设置 -> 更多设置 -> 浏览器扩展 API`
-
-注意：这里必须使用适配过的 Sparkle，不能使用官方版本。
-
-适配版下载与源码：
-
-`https://github.com/zlkent/sparkle`
 
 然后完成下面几步：
 
